@@ -19,6 +19,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="../README.md">
+            <Pack>true</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+    
+    <ItemGroup>
       <PackageReference Include="AlmightyShogun.Logging" Version="1.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
     </ItemGroup>
