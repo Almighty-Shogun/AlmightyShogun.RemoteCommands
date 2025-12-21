@@ -7,7 +7,7 @@
         
         <Version>1.0.0</Version>
         <Authors>Almighty-Shogun</Authors>
-        <PackageId>Almighty-Shogun.RemoteCommands</PackageId>
+        <PackageId>AlmightyShogun.RemoteCommands</PackageId>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
