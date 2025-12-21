@@ -1,0 +1,30 @@
+# IDE settings
+.idea
+.fleet
+.vscode
+
+# Library settings
+/vendor/
+/node_modules/
+
+# Environment settings
+.env
+.env.backup
+.env.production
+
+# Project related settings
+/*.Test/
+
+# Language specific settings: Vue
+/dist/
+
+# Language specific settings: C#
+/bin/
+*/bin/
+/obj/
+*/obj/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
