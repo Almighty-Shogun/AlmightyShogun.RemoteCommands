@@ -1,0 +1,31 @@
+name: Release package
+
+on:
+    release:
+        types: [ released ]
+
+permissions:
+    contents: read
+
+jobs:
+    publish:
+        runs-on: windows-latest
+        name: Publish package
+        
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Setup .NET SDK
+                uses: actions/setup-dotnet@v5
+                with:
+                    dotnet-version: 10.0.x
+                    
+            -   name: Build package
+                run: dotnet build AlmightyShogun.RemoteCommands/AlmightyShogun.RemoteCommands.csproj --configuration Release
+                  
+            -   name: Pack package
+                run: dotnet pack AlmightyShogun.RemoteCommands/AlmightyShogun.RemoteCommands.csproj --configuration Release --output .
+                
+            -   name: Publish package
+                run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
