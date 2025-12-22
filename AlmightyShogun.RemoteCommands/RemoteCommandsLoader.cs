@@ -16,7 +16,7 @@ public static class RemoteCommandsLoader
     /// 
     /// <author>Almighty-Shogun</author>
     /// <since>1.0.0</since>
-    public static IServiceCollection AddNetworkListener(this IServiceCollection serviceCollection, Action<IRemoteConfig>? config = null)
+    public static IServiceCollection AddRemoteCommands(this IServiceCollection serviceCollection, Action<IRemoteConfig>? config = null)
     {
         if (config is not null)
         {
