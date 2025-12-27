@@ -4,6 +4,6 @@ namespace AlmightyShogun.RemoteCommands;
 
 public class RemoteCommandPayload
 {
-    public string Command { get; set; }
-    public JsonElement Data { get; set; }
+    public required string Command { get; init; }
+    public JsonElement Data { get; init; }
 }
