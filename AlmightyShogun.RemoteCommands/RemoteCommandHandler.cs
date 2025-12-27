@@ -9,6 +9,8 @@ namespace AlmightyShogun.RemoteCommands;
 
 public class RemoteCommandHandler : IRemoteCommandHandler
 {
+    private TcpListener? _listener;
+    
     private readonly IRemoteConfig _config;
     private readonly ILogger<RemoteCommandHandler> _logger;
     private readonly Dictionary<string, IRemoteCommand> _commands;
@@ -21,22 +23,39 @@ public class RemoteCommandHandler : IRemoteCommandHandler
     }
 
     /// <inheritdoc />
-    public async Task StartAsync()
+    public async Task StartAsync(CancellationToken cancellationToken = default)
     {
-        var listener = new TcpListener(_config.Address, _config.Port);
+        _listener = new TcpListener(IPAddress.Parse(_config.Address), _config.Port);
         
-        listener.Start();
-        
-        _logger.LogInformation("Started listening for remote command on {Address:c}:{Port:c}", _config.Address, _config.Port);
+        _listener.Start();
 
-        while (true)
+        if (_logger.IsEnabled(LogLevel.Information))
         {
-            TcpClient client = await listener.AcceptTcpClientAsync();
+            _logger.LogInformation("Started listening for remote command on {Address:c}:{Port:c}", _config.Address, _config.Port);
+        }
+
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            TcpClient client = await _listener.AcceptTcpClientAsync(cancellationToken);
             
             await HandleClientAsync(client);
         }
     }
 
+    /// <inheritdoc />
+    public void Stop()
+    {
+        if (_listener is null) return;
+        
+        _listener.Stop();
+        _listener = null;
+        
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation("Stopped listening for remote command.");
+        }
+    }
+    
     /// <summary>
     /// Handles communication with a connected client by reading and processing remote commands.
     /// </summary>
@@ -52,10 +71,13 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         var remoteEndPoint = client.Client.RemoteEndPoint as IPEndPoint;
         IPAddress? remoteIp = remoteEndPoint?.Address;
 
-        if (remoteIp == null || !_config.WhitelistedIpAddresses.Contains(remoteIp))
+        if (remoteIp == null || !_config.WhitelistedIpAddresses.Contains(remoteIp.ToString()))
         {
-            _logger.LogWarning("Rejected connection from non-whitelisted address {Address:c}", remoteEndPoint);
-
+            if (_logger.IsEnabled(LogLevel.Warning))
+            {
+                _logger.LogWarning("Rejected connection from non-whitelisted address {Address:c}", remoteEndPoint);
+            }
+            
             client.Close();
             
             return;
@@ -71,19 +93,29 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         
         if (payload == null)
         {
-            _logger.LogWarning("Received invalid payload from {Address:c}", client.Client.RemoteEndPoint);
+            if (_logger.IsEnabled(LogLevel.Warning))
+            {
+                _logger.LogWarning("Received invalid payload from {Address:c}", client.Client.RemoteEndPoint);
+            }
+            
             return;
         }
         
         if (_commands.TryGetValue(payload.Command, out IRemoteCommand? handler))
         {
-            _logger.LogInformation("Received remote command {Command:c} from {Address:c}", payload.Command, client.Client.RemoteEndPoint);
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Received remote command {Command:c} from {Address:c}", payload.Command, client.Client.RemoteEndPoint);
+            }
             
             await handler.HandleRawAsync(payload.Data, stream);
         }
         else
         {
-            _logger.LogWarning("Received unknown remote command {Command:c} from {Address:c}", payload.Command, client.Client.RemoteEndPoint);
+            if (_logger.IsEnabled(LogLevel.Warning))
+            {
+                _logger.LogWarning("Received unknown remote command {Command:c} from {Address:c}", payload.Command, client.Client.RemoteEndPoint);
+            }
         }
 
         client.Close();
