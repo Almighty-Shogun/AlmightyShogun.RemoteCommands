@@ -82,10 +82,10 @@ public class RemoteCommandHandler : IRemoteCommandHandler
             
             return;
         }
-        
+
+        var buffer = new byte[4 * 1024];
         await using NetworkStream stream = client.GetStream();
-        var buffer = new byte[4096];
-        
+
         int bytesRead = await stream.ReadAsync(buffer);
         string json = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
