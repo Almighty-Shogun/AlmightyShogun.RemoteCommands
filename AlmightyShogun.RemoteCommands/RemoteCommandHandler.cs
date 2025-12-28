@@ -38,7 +38,7 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         {
             TcpClient client = await _listener.AcceptTcpClientAsync(cancellationToken);
             
-            await HandleClientAsync(client);
+            _ = Task.Run(() => HandleClientAsync(client), cancellationToken);
         }
     }
 
@@ -52,7 +52,7 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         
         if (_logger.IsEnabled(LogLevel.Information))
         {
-            _logger.LogInformation("Stopped listening for remote command.");
+            _logger.LogInformation("Stopped listening for remote commands.");
         }
     }
     
