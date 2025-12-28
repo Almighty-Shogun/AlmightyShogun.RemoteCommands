@@ -4,7 +4,8 @@ namespace AlmightyShogun.RemoteCommands.Configuration;
 
 public interface IRemoteConfig
 {
-    public string Address { get; set; }
-    public int Port { get; set; }
-    public HashSet<string> WhitelistedIpAddresses { get; }
+    public string Address { get; }
+    public int Port { get; }
+    public HashSet<string> Whitelisted { get; }
+    public bool EnableReceiveLog { get; }
 }

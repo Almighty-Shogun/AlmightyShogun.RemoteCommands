@@ -71,7 +71,7 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         var remoteEndPoint = client.Client.RemoteEndPoint as IPEndPoint;
         IPAddress? remoteIp = remoteEndPoint?.Address;
 
-        if (remoteIp == null || !_config.WhitelistedIpAddresses.Contains(remoteIp.ToString()))
+        if (remoteIp == null || !_config.Whitelisted.Contains(remoteIp.ToString()))
         {
             if (_logger.IsEnabled(LogLevel.Warning))
             {
@@ -103,7 +103,7 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         
         if (_commands.TryGetValue(payload.Command, out IRemoteCommand? handler))
         {
-            if (_logger.IsEnabled(LogLevel.Information))
+            if (_logger.IsEnabled(LogLevel.Information) && _config.EnableReceiveLog)
             {
                 _logger.LogInformation("Received remote command {Command:c} from {Address:c}", payload.Command, client.Client.RemoteEndPoint);
             }
@@ -112,7 +112,7 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         }
         else
         {
-            if (_logger.IsEnabled(LogLevel.Warning))
+            if (_logger.IsEnabled(LogLevel.Warning) && _config.EnableReceiveLog)
             {
                 _logger.LogWarning("Received unknown remote command {Command:c} from {Address:c}", payload.Command, client.Client.RemoteEndPoint);
             }
