@@ -95,7 +95,7 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         {
             if (_logger.IsEnabled(LogLevel.Warning))
             {
-                _logger.LogWarning("Received invalid payload from {Address:c}", client.Client.RemoteEndPoint);
+                _logger.LogWarning("Received invalid payload from {Address:c}", remoteEndPoint);
             }
             
             return;
@@ -105,7 +105,7 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         {
             if (_logger.IsEnabled(LogLevel.Information) && _config.EnableReceiveLog)
             {
-                _logger.LogInformation("Received remote command {Command:c} from {Address:c}", payload.Command, client.Client.RemoteEndPoint);
+                _logger.LogInformation("Received remote command {Command:y} from {Address:c}", payload.Command, remoteEndPoint);
             }
             
             await handler.HandleRawAsync(payload.Data, stream);
@@ -114,7 +114,7 @@ public class RemoteCommandHandler : IRemoteCommandHandler
         {
             if (_logger.IsEnabled(LogLevel.Warning) && _config.EnableReceiveLog)
             {
-                _logger.LogWarning("Received unknown remote command {Command:c} from {Address:c}", payload.Command, client.Client.RemoteEndPoint);
+                _logger.LogWarning("Received unknown remote command {Command:y} from {Address:c}", payload.Command, remoteEndPoint);
             }
         }
 
