@@ -1,4 +1,4 @@
-# RemoteCommands
+# Remote Commands
 A simple C# implementation for remote commands using attributes.
 
 ## 📃 Prerequisites
