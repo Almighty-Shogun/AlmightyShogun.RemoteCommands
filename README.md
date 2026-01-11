@@ -1,3 +1,6 @@
+> [!WARNING]
+> This repository has been archived and the `AlmightyShogun.RemoteCommands` package has been transfered to [Almighty-Shogun/NuGetPackages](https://github.com/Almighty-Shogun/NuGetPackages)
+
 # Remote Commands
 A simple C# implementation for remote commands using attributes.
 
